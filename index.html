@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b3766">
+  <meta name="description" content="FOKUS — convierte tu tiempo y energía en progreso real.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <title>FOKUS</title>
+  <style>
+    :root{--navy:#0b3766;--blue:#124d86;--orange:#f58a00;--bg:#f5f7fa;--card:#fff;--text:#172536;--muted:#718096;--line:#e5eaf0;--ok:#2f9e62}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
+    button,input,textarea,select{font:inherit}button{cursor:pointer}
+    .splash{position:fixed;inset:0;background:white;display:flex;align-items:center;justify-content:center;z-index:50;animation:hide 2.2s forwards}
+    .splash img{width:min(430px,78vw);filter:drop-shadow(0 12px 25px #0b376620)}@keyframes hide{0%,82%{opacity:1}100%{opacity:0;visibility:hidden}}
+    header{height:68px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:sticky;top:0;z-index:10}
+    .brand{display:flex;align-items:center;gap:10px}.brand img{height:43px;width:43px}.brand b{font-size:24px;letter-spacing:3px;color:var(--navy)}.brand span{color:var(--orange)}
+    .layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 68px)}
+    aside{background:var(--navy);padding:18px 12px;color:white}.nav{display:flex;flex-direction:column;gap:7px}.nav button{border:0;background:transparent;color:#dbe8f5;text-align:left;padding:12px 13px;border-radius:10px}.nav button:hover,.nav button.active{background:#ffffff18;color:white}
+    main{max-width:1250px;width:100%;margin:auto;padding:28px}
+    .hero{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.hero h1{margin:0 0 5px;font-size:30px}.hero p{margin:0;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 4px 15px #17253608}.wide{grid-column:span 2}
+    .timer{text-align:center;padding:22px}.time{font-size:64px;font-weight:750;letter-spacing:2px;color:var(--navy);margin:10px}.timer .mode{font-weight:700;color:var(--orange);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+    .actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.btn{border:0;border-radius:10px;padding:10px 15px;font-weight:700}.primary{background:var(--navy);color:white}.orange{background:var(--orange);color:white}.ghost{background:#edf2f7;color:var(--navy)}
+    .stat{font-size:28px;font-weight:750;color:var(--navy)}.muted{color:var(--muted);font-size:13px}.progress{height:11px;background:#edf1f5;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--navy),var(--orange));width:0}
+    .tasks{display:flex;gap:12px;overflow:auto}.col{min-width:220px;background:#f7f9fb;border-radius:12px;padding:12px}.col h3{font-size:14px;margin:2px 0 10px}.task{background:white;border:1px solid var(--line);padding:11px;border-radius:9px;margin:7px 0}.task small{display:block;color:var(--muted);margin-top:4px}
+    .row{display:flex;gap:8px}.row input,.row textarea,.row select{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px;background:white}.row textarea{min-height:100px}
+    .habit{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:11px 0}.check{width:32px;height:32px;border-radius:9px;border:1px solid #cbd5e1;background:white}.check.done{background:var(--ok);color:white;border-color:var(--ok)}
+    .energy{display:flex;gap:8px}.energy button{flex:1;border:1px solid var(--line);background:white;border-radius:10px;padding:12px}.energy button.selected{border-color:var(--orange);background:#fff4e5}
+    .hidden{display:none}.focus{position:fixed;inset:0;background:#071d35;color:white;z-index:40;display:none;align-items:center;justify-content:center;text-align:center}.focus.show{display:flex}.focus .time{color:white;font-size:110px}.focus .taskname{font-size:25px;margin-bottom:25px}
+    .toast{position:fixed;right:20px;bottom:20px;background:#172536;color:white;padding:12px 16px;border-radius:10px;display:none;z-index:70}
+    @media(max-width:850px){.layout{grid-template-columns:1fr}aside{position:sticky;top:68px;z-index:9}.nav{flex-direction:row;overflow:auto}.nav button{white-space:nowrap}.grid{grid-template-columns:1fr}.wide{grid-column:span 1}main{padding:18px}.hero{align-items:flex-start;gap:15px;flex-direction:column}}
+  </style>
+</head>
+<body>
+<div class="splash"><img src="fokus-wordmark.png" alt="FOKUS"></div>
+<header><div class="brand"><img src="icons/icon-192.png"><b>F<span>O</span>KUS</b></div><button class="btn ghost" id="installBtn" hidden>Instalar FOKUS</button></header>
+<div class="layout">
+<aside><div class="nav">
+<button class="active" data-page="dashboard">⌂ Inicio</button>
+<button data-page="focus">◉ Enfoque</button>
+<button data-page="tasks">✓ Tareas</button>
+<button data-page="habits">↗ Hábitos</button>
+<button data-page="vision">✦ Visión</button>
+<button data-page="journal">✎ Diario</button>
+<button data-page="stats">▥ Progreso</button>
+</div></aside>
+<main>
+<section id="dashboard" class="page">
+<div class="hero"><div><h1>Construye tu progreso.</h1><p>Hoy no necesitas hacerlo todo. Solo avanzar.</p></div><button class="btn orange" onclick="startFocus()">Empezar enfoque</button></div>
+<div class="grid">
+<div class="card timer"><div class="mode" id="mode">Enfoque</div><div class="time" id="time">25:00</div><div class="actions"><button class="btn primary" id="timerBtn" onclick="toggleTimer()">Iniciar</button><button class="btn ghost" onclick="resetTimer()">Reiniciar</button></div></div>
+<div class="card"><h3>Progreso del sueño</h3><div class="stat" id="progressText">0%</div><div class="progress"><i id="progressBar"></i></div><p class="muted">Completa hitos y micro-tareas para subir.</p></div>
+<div class="card"><h3>Energía de hoy</h3><p class="muted">¿Con qué nivel quieres trabajar?</p><div class="energy" id="energy"><button onclick="setEnergy(1)">1</button><button onclick="setEnergy(2)">2</button><button onclick="setEnergy(3)">3</button><button onclick="setEnergy(4)">4</button><button onclick="setEnergy(5)">5</button></div><p id="energyMsg" class="muted"></p></div>
+<div class="card wide"><h3>Hoy</h3><div id="todayTasks"></div></div>
+<div class="card"><h3>Tiempo real</h3><div class="stat" id="totalTime">0 min</div><p class="muted">Enfoque acumulado hoy.</p></div>
+</div></section>
+
+<section id="tasks" class="page hidden"><div class="hero"><div><h1>Tablero</h1><p>Convierte el sueño en acciones pequeñas.</p></div></div><div class="card"><div class="row"><input id="newTask" placeholder="Nueva micro-tarea..."><button class="btn primary" onclick="addTask()">Añadir</button></div><br><div class="tasks"><div class="col"><h3>Por hacer</h3><div id="todo"></div></div><div class="col"><h3>En proceso</h3><div id="doing"></div></div><div class="col"><h3>Hecho</h3><div id="done"></div></div></div></div></section>
+
+<section id="habits" class="page hidden"><div class="hero"><div><h1>Constancia</h1><p>Las pequeñas acciones construyen identidad.</p></div></div><div class="card"><div class="row"><input id="newHabit" placeholder="Ej. Leer 20 minutos"><button class="btn primary" onclick="addHabit()">Añadir hábito</button></div><div id="habitList"></div></div></section>
+
+<section id="vision" class="page hidden"><div class="hero"><div><h1>Tu porqué</h1><p>Ten tu sueño visible cuando necesites recordar por qué empezaste.</p></div></div><div class="card"><textarea id="visionText" placeholder="Escribe aquí tu visión, frases, metas o recordatorios..."></textarea><br><br><button class="btn primary" onclick="saveVision()">Guardar visión</button><p id="visionSaved" class="muted"></p></div></section>
+
+<section id="journal" class="page hidden"><div class="hero"><div><h1>3 micro-victorias</h1><p>Cierra el día reconociendo lo que sí avanzaste.</p></div></div><div class="card"><div class="row"><textarea id="journalText" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea></div><br><button class="btn primary" onclick="saveJournal()">Guardar hoy</button><p id="journalSaved" class="muted"></p></div></section>
+
+<section id="stats" class="page hidden"><div class="hero"><div><h1>Progreso</h1><p>Observa tus datos, no solo tus sensaciones.</p></div></div><div class="grid"><div class="card"><h3>Enfoque total</h3><div class="stat" id="statFocus">0 min</div></div><div class="card"><h3>Tareas completadas</h3><div class="stat" id="statDone">0</div></div><div class="card"><h3>Hábitos activos</h3><div class="stat" id="statHabits">0</div></div><div class="card wide"><h3>Auditoría semanal</h3><p id="audit" class="muted">Completa sesiones y tareas durante la semana para generar tu resumen.</p></div></div></section>
+</main></div>
+
+<div class="focus" id="focusScreen"><div><div class="taskname" id="focusTask">Enfoque profundo</div><div class="time" id="focusTime">25:00</div><button class="btn orange" onclick="toggleTimer()">Pausar / continuar</button> <button class="btn ghost" onclick="closeFocus()">Salir</button></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='fokus_v1';
+let state=JSON.parse(localStorage.getItem(KEY)||'{"tasks":[],"habits":[],"focusSeconds":0,"vision":"","journal":{},"energy":0,"progress":0}');
+let seconds=1500, running=false, interval=null, mode='Enfoque', deferredPrompt=null;
+const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+const $=id=>document.getElementById(id);
+function toast(t){$('toast').textContent=t;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2200)}
+function render(){
+  $('totalTime').textContent=Math.floor(state.focusSeconds/60)+' min'; $('statFocus').textContent=Math.floor(state.focusSeconds/60)+' min';
+  $('statDone').textContent=state.tasks.filter(x=>x.status==='done').length; $('statHabits').textContent=state.habits.length;
+  $('progressText').textContent=state.progress+'%'; $('progressBar').style.width=state.progress+'%';
+  $('visionText').value=state.vision||''; $('journalText').value=state.journal[new Date().toISOString().slice(0,10)]||'';
+  $('todayTasks').innerHTML=state.tasks.length?state.tasks.slice(0,5).map(x=>`<div class="task"><b>${esc(x.text)}</b><small>${x.status==='done'?'✓ Hecho':'Micro-acción pendiente'}</small></div>`).join(''):'<p class="muted">Añade una micro-tarea para empezar.</p>';
+  $('todo').innerHTML=state.tasks.filter(x=>x.status==='todo').map(taskHTML).join('')||'<span class="muted">Vacío</span>';
+  $('doing').innerHTML=state.tasks.filter(x=>x.status==='doing').map(taskHTML).join('')||'<span class="muted">Vacío</span>';
+  $('done').innerHTML=state.tasks.filter(x=>x.status==='done').map(taskHTML).join('')||'<span class="muted">Vacío</span>';
+  $('habitList').innerHTML=state.habits.map((h,i)=>`<div class="habit"><span><b>${esc(h.text)}</b><br><small class="muted">Racha: ${h.streak||0} días</small></span><button class="check ${h.done?'done':''}" onclick="toggleHabit(${i})">${h.done?'✓':'○'}</button></div>`).join('')||'<p class="muted">Crea tu primer hábito.</p>';
+  $('audit').textContent=`Has acumulado ${Math.floor(state.focusSeconds/60)} minutos de enfoque y ${state.tasks.filter(x=>x.status==='done').length} tareas completadas. Usa estos datos para decidir qué ajustar la próxima semana.`;
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function taskHTML(x){let next=x.status==='todo'?'doing':x.status==='doing'?'done':'todo';return `<div class="task"><b>${esc(x.text)}</b><small><button class="btn ghost" onclick="moveTask('${x.id}','${next}')">${next==='doing'?'→ En proceso':next==='done'?'✓ Hecho':'↶ Reiniciar'}</button></small></div>`}
+function addTask(){let v=$('newTask').value.trim();if(!v)return;state.tasks.push({id:Date.now(),text:v,status:'todo'});$('newTask').value='';save();render()}
+function moveTask(id,status){let t=state.tasks.find(x=>x.id==id);if(!t)return;t.status=status;if(status==='done')state.progress=Math.min(100,state.progress+5);save();render()}
+function addHabit(){let v=$('newHabit').value.trim();if(!v)return;state.habits.push({text:v,streak:0,done:false});$('newHabit').value='';save();render()}
+function toggleHabit(i){let h=state.habits[i];h.done=!h.done;if(h.done)h.streak=(h.streak||0)+1;save();render()}
+function setEnergy(n){state.energy=n;save();document.querySelectorAll('.energy button').forEach((b,i)=>b.classList.toggle('selected',i===n-1));$('energyMsg').textContent=n<=2?'Energía baja: empieza con una tarea sencilla.':n===3?'Energía media: combina una tarea importante y una pequeña.':'Energía alta: aprovecha para el desafío más importante.'}
+function saveVision(){state.vision=$('visionText').value;save();toast('Visión guardada')}
+function saveJournal(){state.journal[new Date().toISOString().slice(0,10)]=$('journalText').value;save();toast('Micro-victorias guardadas')}
+function updateClock(){
+  let m=Math.floor(seconds/60),s=seconds%60,txt=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');$('time').textContent=txt;$('focusTime').textContent=txt;
+}
+function toggleTimer(){if(running){running=false;clearInterval(interval);$('timerBtn').textContent='Continuar';return}running=true;$('timerBtn').textContent='Pausar';interval=setInterval(()=>{seconds--;state.focusSeconds++;if(seconds<=0){clearInterval(interval);running=false;seconds=mode==='Enfoque'?300:1500;mode=mode==='Enfoque'?'Descanso':'Enfoque';$('mode').textContent=mode;toast(mode+' iniciado');try{new Notification('FOKUS',{body:mode+' iniciado'})}catch(e){} }updateClock();save();render()},1000)}
+function resetTimer(){clearInterval(interval);running=false;seconds=mode==='Enfoque'?1500:300;$('timerBtn').textContent='Iniciar';updateClock()}
+function startFocus(){$('focusScreen').classList.add('show');toggleTimer()}
+function closeFocus(){$('focusScreen').classList.remove('show')}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));$(b.dataset.page).classList.remove('hidden')});
+document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='n' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){ $('newTask').focus(); toast('Atajo: escribe tu nueva idea/tarea'); }});
+if('Notification' in window) Notification.requestPermission().catch(()=>{});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').hidden=false});
+$('installBtn').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;$('installBtn').hidden=true}};
+render();updateClock();
+</script>
+</body>
+</html>
